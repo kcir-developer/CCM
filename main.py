@@ -1,4 +1,4 @@
-from flask import Flask, render_template, redirect, request, url_for
+from flask import Flask, render_template, request
 from psycopg2 import connect
 from database import disconnect, get_column_names
 
@@ -30,14 +30,16 @@ def disconnect_from_database():
 
 def get_previous_record(cursor, current_date):
     cursor.execute(
-        "SELECT * FROM dataccm WHERE unidade < %s ORDER BY unidade DESC LIMIT 1", (current_date,))
+        "SELECT * FROM dataccm", (current_date,))
+    #  "SELECT * FROM dataccm WHERE servico < %s ORDER BY servico DESC LIMIT 1", (current_date,))
     previous_record = cursor.fetchone()
     return previous_record if previous_record else {}
 
 
 def get_next_record(cursor, current_date):
     cursor.execute(
-        "SELECT * FROM dataccm WHERE unidade > %s ORDER BY unidade ASC LIMIT 1", (current_date,))
+        "SELECT * FROM dataccm", (current_date,))
+    #   "SELECT * FROM dataccm WHERE servico > %s ORDER BY servico ASC LIMIT 1", (current_date,))
     next_record = cursor.fetchone()
     return next_record if next_record else {}
 
@@ -57,6 +59,8 @@ def index():
         for row in rows:
             # Cada linha será um dicionário onde as chaves são os nomes das colunas e os valores são os dados correspondentes
             dados.append({columns[i]: row[i] for i in range(len(columns))})
+
+      #  print(dados)  # Adicione esta linha para imprimir os dados
 
         # Passa os dados para o template
         return render_template('index.html', columns=columns, dados=dados)
