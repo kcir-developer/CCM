@@ -1,0 +1,63 @@
+/* Estilos para o formulário */
+
+body {
+    background-color: #f8f9fa; /* Cor de fundo do corpo da página */
+}
+
+.container {
+    max-width: 600px; /* Largura máxima do container para centralizar o formulário */
+    margin: 0 auto; /* Centralizar o container na página */
+    padding: 20px; /* Espaçamento interno do container */
+    background-color: #fff; /* Cor de fundo do container */
+    border-radius: 10px; /* Arredondar as bordas do container */
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1); /* Sombra suave */
+}
+
+h1 {
+    text-align: center;
+    color: #333;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+label {
+    font-weight: bold;
+    color: #555;
+}
+
+input[type="text"] {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    transition: border-color 0.3s; /* Transição suave para a cor da borda */
+}
+
+input[type="text"]:focus {
+    border-color: #007bff; /* Cor da borda ao focar no campo */
+}
+
+.btn {
+    display: inline-block;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    background-color: #007bff;
+    color: #fff;
+    cursor: pointer;
+    transition: background-color 0.3s; /* Transição suave para a cor de fundo */
+}
+
+.btn:hover {
+    background-color: #0056b3; /* Cor de fundo ao passar o mouse */
+}
+
+.btn-secondary {
+    background-color: #6c757d;
+}
+
+.btn-secondary:hover {
+    background-color: #545b62;
+}

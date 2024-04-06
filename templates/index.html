@@ -1,116 +1,159 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-PT">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Formulário</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <link rel="stylesheet" href="css/components/style.css">
+    <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
     <!-- Imagem no canto superior esquerdo -->
-    <img src="img/marinha.jpeg" alt="Imagem" style="position: absolute; top: 30px; left: 20px; max-width: 150px; height: auto;">
+    <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjFVkG6rITjeBsZc5M-srbCW0gcHHgPnw5E7E6GcDH2qRhIyzfxnRv4wZIJ7BUMLM1cqPdEbi3tm-J3BUvULa_Q8dWhd_vq_YR25SmnCJuluPufC-nquOP_DbhNgAueqTZmllzIQ2GakHcZ/s640/Bras%25C3%25A3o+de+Portugal.png" alt="Marinha" style="position: absolute; top: 30px; left: 20px; max-width: 150px; height: auto;">
 
-<div class="container">
-    <h1 class="text-center mb-4">Formulário de dados CCM</h1>
-       <form method="POST" class="form-background">
-        {% for column in columns %}
-        <div class="form-group row">
-            <label for="{{ column }}" class="col-sm-2 col-form-label">{{ column }}</label>
-            <div class="col-sm-10">
-                <input type="text" class="form-control" name="{{ column }}" id="{{ column }}">
-           </div>
-        </div>
-        {% endfor %}
-        <div class="form-group row">
-            <div class="col-sm-10 offset-sm-2">
-                <button type="button" class="btn btn-primary" id="btnNovoRegistro">Novo Registro</button>
-                <button type="button" class="btn btn-primary" id="btnApagarRegistro">Apagar Registro</button>
+    <div class="container">
+        <h1 class="text-center mb-4">Formulário de dados CCM</h1>
+        <form method="POST" class="form-background">
+            {% for column in columns %}
+            <div class="form-group row">
+                <label for="{{ column }}" class="col-sm-2 col-form-label">{{ column }}</label>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control" name="{{ column }}" id="{{ column }}">
+                </div>
             </div>
-        </div>
-        <div class="form-group row">
-            <div class="col-sm-10 offset-sm-2">
-                <button type="button" class="btn btn-secondary" onclick="previous()">Anterior</button>
-                <button type="button" class="btn btn-secondary" onclick="next()">Próximo</button>
+            {% endfor %}
+            <div class="form-group row">
+                <div class="col-sm-10 offset-sm-2">
+                    <button type="button" class="btn btn-primary" id="btnNovoRegisto">Novo Registo</button>
+                    <button type="button" class="btn btn-primary" id="btnApagarRegisto">Apagar Registo</button>
+                    <button type="button" class="btn btn-primary" id="btnGravarRegisto">Gravar Registo</button>
+                </div>
             </div>
-        </div>
-    </form>
-</div>
+            <div class="form-group row">
+                <div class="col-sm-10 offset-sm-2">
+                    <button type="button" class="btn btn-secondary" onclick="previous()">Anterior</button>
+                    <button type="button" class="btn btn-secondary" onclick="next()">Próximo</button>
+                </div>
+                <!-- Seletor de registos -->
+    <div class="record-selector">
+        Total de Registos selecionados: <span id="total-records">0</span>
+    </div>
+            </div>
+        </form>
+    </div>
+    
+    <script>
+        // Passa os dados para o JavaScript
+        let dados = JSON.parse('{{ dados | tojson | safe }}');
+        let currentRow = 0; // Inicializa o índice da linha atual
 
-<!-- Seletor de registros -->
-<div class="record-selector">
-    Total de Registros: <span id="total-records">0</span>
-</div>
-
-<script>
-    // Passa os dados para o JavaScript
-    let dados = JSON.parse('{{ dados | tojson | safe }}');
-    let currentRow = 0; // Inicializa o índice da linha atual
-
-    // Função para preencher os campos de entrada com os dados da linha especificada
-    function fillFormFields(row) {
-        // Verifica se o índice da linha é válido
-        if (row >= 0 && row < dados.length) {
-            // Preenche os campos do formulário com os dados da linha especificada
-            let row_data = dados[row];
-            Object.keys(row_data).forEach(function(column) {
-                document.getElementById(column).value = row_data[column] || '';
-            });
-            // Atualiza o índice da linha atual
-            currentRow = row;
-        } else {
-            console.error("Índice de linha inválido");
+        // Função para preencher os campos de entrada com os dados da linha especificada
+        function fillFormFields(row) {
+            // Verifica se o índice da linha é válido
+            if (row >= 0 && row < dados.length) {
+                // Preenche os campos do formulário com os dados da linha especificada
+                let row_data = dados[row];
+                Object.keys(row_data).forEach(function(column) {
+                    document.getElementById(column).value = row_data[column] || '';
+                });
+                // Atualiza o índice da linha atual
+                currentRow = row;
+            } else {
+                console.error("Índice de linha inválido");
+            }
         }
-    }
-    
-    // Chama a função fillFormFields para preencher os campos do formulário com os dados da primeira linha ao carregar a página
-    document.addEventListener("DOMContentLoaded", function() {
-        fillFormFields(0); // Preenche com os dados da primeira linha
-    });
-    
-    // Função para preencher os campos do formulário com os dados da linha anterior
-    function previous() {
-        fillFormFields(currentRow - 1);
-    }
-    
-    // Função para preencher os campos do formulário com os dados da próxima linha
-    function next() {
-        fillFormFields(currentRow + 1);
-    }
 
-    // Função para atualizar o total de registros exibidos
-    function updateTotalRecords() {
-        document.getElementById("total-records").textContent = dados.length;
-    }
+        // Chama a função fillFormFields para preencher os campos do formulário com os dados da primeira linha ao carregar a página
+        document.addEventListener("DOMContentLoaded", function() {
+            fillFormFields(0); // Preenche com os dados da primeira linha
+        });
 
-    // Função para inserir um novo registro na tabela
-    function inserirNovoRegistro() {
-        // Crie um novo objeto de registro com campos vazios
-        let novoRegistro = {};
-        //   {% for column in columns %}
-        novoRegistro['{{ column }}'] = '';
-        //    {% endfor %}
+        // Função para preencher os campos do formulário com os dados da linha anterior
+        function previous() {
+            fillFormFields(currentRow - 1);
+        }
 
-        // Adicione o novo registro aos dados existentes
-        dados.push(novoRegistro);
+        // Função para preencher os campos do formulário com os dados da próxima linha
+        function next() {
+            fillFormFields(currentRow + 1);
+        }
 
-        // Atualize o total de registros
-        updateTotalRecords();
+        // Função para atualizar o total de registos exibidos
+        function updateTotalRecords() {
+            document.getElementById("total-records").textContent = dados.length;
+        }
 
-        // Atualize o formulário para exibir o novo registro
-        fillFormFields(dados.length - 1);
-    }
+        // Função para inserir um novo registo na tabela
+        function inserirNovoRegisto() {
+            // Crie um novo objeto de registo com campos vazios
+            let novoRegistro = {};
+            //   {% for column in columns %}
+            novoRegistro['{{ column }}'] = '';
+            //    {% endfor %}
 
-    // Adicione um evento de clique ao botão "Novo Registro"
-    document.getElementById("btnNovoRegistro").addEventListener("click", function() {
-        inserirNovoRegistro();
-    });
+            // Adicione o novo registro aos dados existentes
+            dados.push(novoRegistro);
 
-</script>
+            // Atualize o total de registos
+            updateTotalRecords();
 
-<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-</body>
-</html>
+            // Atualize o formulário para exibir o novo registo
+            fillFormFields(dados.length - 1);
+        }
+
+        // Função para apagar o registo atual
+        function apagarRegisto() {
+            // Remove o registo atual dos dados
+            dados.splice(currentRow, 1);
+
+            // Atualize o total de registos
+            updateTotalRecords();
+
+            // Se não houver registos após a remoção, limpe os campos do formulário
+            if (dados.length === 0) {
+                // Limpa os campos do formulário
+                document.querySelectorAll('input[type="text"]').forEach(input => input.value = '');
+                // Atualiza o índice da linha atual para 0
+                currentRow = 0;
+            } else {
+                // Atualize o formulário para exibir o próximo registo, se houver
+                fillFormFields(Math.min(currentRow, dados.length - 1));
+            }
+        }
+
+        // Função para gravar o registo atual
+        function gravarRegisto() {
+            // Pega os valores dos campos do formulário
+            let formData = {};
+            document.querySelectorAll('input[type="text"]').forEach(input => {
+                formData[input.id] = input.value;
+            });
+
+            // Atualiza o registo atual nos dados
+            dados[currentRow] = formData;
+
+            // Feedback ou outra lógica de gravação aqui
+            console.log("Registro gravado com sucesso!");
+        }
+
+        // Adicione um evento de clique ao botão "Novo Registo"
+        document.getElementById("btnNovoRegisto").addEventListener("click", function() {
+            inserirNovoRegisto();
+        });
+
+        // Adicione um evento de clique ao botão "Apagar Registo"
+        document.getElementById("btnApagarRegisto").addEventListener("click", function() {
+            apagarRegisto();
+        });
+
+        // Adicione um evento de clique ao botão "Gravar Registo"
+        document.getElementById("btnGravarRegisto").addEventListener("click", function() {
+            gravarRegisto();
+        });
+
+    </script>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5
+
 
