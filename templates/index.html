@@ -5,11 +5,22 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Formulário</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="static\styles.css">
+    <style>
+        /* Estilos para a imagem no canto superior direito */
+        .corner-image {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            max-width: 150px; /* Ajustar conforme necessário */
+            height: auto;
+        }
+    </style>
 </head>
 <body>
 <div class="container">
     <h1 class="text-center mb-4">Formulário de dados CCM</h1>
-    <form method="POST">
+     <form method="POST">
         {% for column in columns %}
         <div class="form-group row">
             <label for="{{ column }}" class="col-sm-2 col-form-label">{{ column }}</label>
@@ -20,8 +31,8 @@
         {% endfor %}
         <div class="form-group row">
             <div class="col-sm-10 offset-sm-2">
-                <button type="submit" class="btn btn-primary">Enviar</button>
-                <button type="button" class="btn btn-primary" onclick="location.href='/new'">Novo Registro</button>
+                <button type="button" class="btn btn-primary" id="btnNovoRegistro">Novo Registro</button>
+                <button type="button" class="btn btn-primary" id="btnApagarRegistro">Apagar Registro</button>
             </div>
         </div>
         <div class="form-group row">
@@ -31,6 +42,14 @@
             </div>
         </div>
     </form>
+</div>
+
+<!-- Imagem no canto superior direito -->
+<img src="img\marinhaLogo.png" alt="Imagem" class="corner-image">
+
+<!-- Seletor de registros -->
+<div class="record-selector">
+    Total de Registros: <span id="total-records">0</span>
 </div>
 
 <script>
@@ -68,6 +87,39 @@
     function next() {
         fillFormFields(currentRow + 1);
     }
+
+    // Função para atualizar o total de registros exibidos
+    function updateTotalRecords() {
+        document.getElementById("total-records").textContent = dados.length;
+    }
+
+     // Função para inserir um novo registro na tabela
+     function inserirNovoRegistro() {
+        // Crie um novo objeto de registro com campos vazios
+        let novoRegistro = {};
+        {% for column in columns %}
+        novoRegistro['{{ column }}'] = '';
+        {% endfor %}
+
+        // Adicione o novo registro aos dados existentes
+        dados.push(novoRegistro);
+
+        // Atualize o total de registros
+        updateTotalRecords();
+
+        // Atualize o formulário para exibir o novo registro
+        fillFormFields(dados.length - 1);
+    }
+
+    // Adicione um evento de clique ao botão "Novo Registro"
+    document.getElementById("btnNovoRegistro").addEventListener("click", function() {
+        inserirNovoRegistro();
+    });
+
+    // Adicione um evento de clique ao botão "Apagar Registro"
+    document.getElementById("btnApagarRegistro").delEventListener("click", function() {
+        deleteRegistro();
+    });
 </script>
 
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
@@ -75,4 +127,5 @@
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 </html>
+
 

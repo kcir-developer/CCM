@@ -30,16 +30,16 @@ def disconnect_from_database():
 
 def get_previous_record(cursor, current_date):
     cursor.execute(
-        "SELECT * FROM dataccm", (current_date,))
-    #  "SELECT * FROM dataccm WHERE servico < %s ORDER BY servico DESC LIMIT 1", (current_date,))
+        #   "SELECT * FROM dataccm", (current_date,))
+        "SELECT * FROM dataccm WHERE servico < %s ORDER BY servico DESC LIMIT 1", (current_date,))
     previous_record = cursor.fetchone()
     return previous_record if previous_record else {}
 
 
 def get_next_record(cursor, current_date):
     cursor.execute(
-        "SELECT * FROM dataccm", (current_date,))
-    #   "SELECT * FROM dataccm WHERE servico > %s ORDER BY servico ASC LIMIT 1", (current_date,))
+        #   "SELECT * FROM dataccm", (current_date,))
+        "SELECT * FROM dataccm WHERE servico > %s ORDER BY servico ASC LIMIT 1", (current_date,))
     next_record = cursor.fetchone()
     return next_record if next_record else {}
 

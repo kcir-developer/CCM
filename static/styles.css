@@ -1,49 +1,61 @@
-body {
-    font-family: Arial, sans-serif;
+/* Estilos para o formulário */
+.container {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 30px;
+    border-radius: 8px;
+    background-color: #ffffff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    position: relative; /* Para posicionar a imagem em relação a este contêiner */
 }
 
-form {
+h1 {
+    text-align: center;
+    color: #333;
+}
+
+.form-group {
     margin-bottom: 20px;
 }
 
 label {
-    display: block;
-    margin-bottom: 5px;
+    font-weight: bold;
+    color: #555;
 }
 
 input[type="text"] {
-    width: 200px;
-    padding: 5px;
-    margin-bottom: 10px;
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius:5px;
 }
 
-button {
-    padding: 8px 15px;
+.btn {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
     background-color: #007bff;
     color: #fff;
-    border: none;
     cursor: pointer;
 }
 
-button:hover {
+.btn:hover {
     background-color: #0056b3;
 }
 
-table {
-    width: 100%;
-    border-collapse: collapse;
+.btn-secondary {
+    background-color: #6c757d;
 }
 
-table, th, td {
-    border: 1px solid #ddd;
+.btn-secondary:hover {
+    background-color: #545b62;
 }
 
-th, td {
-    padding: 8px;
-    text-align: left;
+.corner-image {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: 100px; /* Ajuste conforme necessário */
+    height: auto;
+    z-index: 1000; /* Para garantir que a imagem fique sobre os outros elementos */
 }
-
-th {
-    background-color: #f2f2f2;
-}
-
