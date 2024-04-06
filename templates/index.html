@@ -5,35 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Formulário</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <link rel="stylesheet" href="css/styles.css">
-    <style>
-        /* Estilos para a imagem no canto superior esquerdo */
-        .corner-image {
-            position: absolute;
-            top: 20px;
-            left: 20px;
-            max-width: 170px; /* Ajustar conforme necessário */
-            height: auto;
-        }
-
-        /* Estilos para o formulário com imagem de fundo */
-        .form-background {
-            background-image: url('img/marinhaLogo.jpg'); /* Substitua pelo caminho da sua imagem */
-            background-size: cover;
-            background-position: center;
-            padding: 20px;
-            border-radius: 10px;
-        }
-    </style>
+    <link rel="stylesheet" href="css/components/style.css">
 </head>
 <body>
+    <!-- Imagem no canto superior esquerdo -->
+    <img src="img/marinha.jpeg" alt="Imagem" style="position: absolute; top: 30px; left: 20px; max-width: 150px; height: auto;">
+
 <div class="container">
     <h1 class="text-center mb-4">Formulário de dados CCM</h1>
-    
-    <!-- Imagem -->
-    <img src="img\marinha.jpeg " alt="Imagem" class="corner-image">
-
-    <form method="POST" class="form-background">
+       <form method="POST" class="form-background">
         {% for column in columns %}
         <div class="form-group row">
             <label for="{{ column }}" class="col-sm-2 col-form-label">{{ column }}</label>

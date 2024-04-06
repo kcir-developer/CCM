@@ -41,12 +41,3 @@ input[type="text"] {
 .btn-secondary:hover {
     background-color: #545b62;
 }
-
-.corner-image {
-    position: absolute;
-    top: 10px;
-    left: 10px;
-    width: 150px; /* Ajuste conforme necessário */
-    height: auto;
-    z-index: 1000; /* Para garantir que a imagem fique sobre os outros elementos */
-}
