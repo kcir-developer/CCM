@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Formulário</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <link rel="stylesheet" href="static\styles.css">
+    <link rel="stylesheet" href="static/styles.css">
     <style>
         /* Estilos para a imagem no canto superior direito */
         .corner-image {
@@ -45,7 +45,7 @@
 </div>
 
 <!-- Imagem no canto superior direito -->
-<img src="img\marinhaLogo.png" alt="Imagem" class="corner-image">
+<img src="templates/img/marinha.png" alt="Imagem" class="corner-image">
 
 <!-- Seletor de registros -->
 <div class="record-selector">
@@ -97,9 +97,9 @@
      function inserirNovoRegistro() {
         // Crie um novo objeto de registro com campos vazios
         let novoRegistro = {};
-        {% for column in columns %}
+     //   {% for column in columns %}
         novoRegistro['{{ column }}'] = '';
-        {% endfor %}
+    //    {% endfor %}
 
         // Adicione o novo registro aos dados existentes
         dados.push(novoRegistro);
@@ -116,10 +116,6 @@
         inserirNovoRegistro();
     });
 
-    // Adicione um evento de clique ao botão "Apagar Registro"
-    document.getElementById("btnApagarRegistro").delEventListener("click", function() {
-        deleteRegistro();
-    });
 </script>
 
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
@@ -127,5 +123,3 @@
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 </html>
-
-

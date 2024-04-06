@@ -1,13 +1,4 @@
 /* Estilos para o formulário */
-.container {
-    max-width: 600px;
-    margin: 0 auto;
-    padding: 30px;
-    border-radius: 8px;
-    background-color: #ffffff;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    position: relative; /* Para posicionar a imagem em relação a este contêiner */
-}
 
 h1 {
     text-align: center;
@@ -55,7 +46,7 @@ input[type="text"] {
     position: absolute;
     top: 10px;
     right: 10px;
-    width: 100px; /* Ajuste conforme necessário */
+    width: 150px; /* Ajuste conforme necessário */
     height: auto;
     z-index: 1000; /* Para garantir que a imagem fique sobre os outros elementos */
 }
