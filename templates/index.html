@@ -5,22 +5,35 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Formulário</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <link rel="stylesheet" href="static/styles.css">
+    <link rel="stylesheet" href="css/styles.css">
     <style>
-        /* Estilos para a imagem no canto superior direito */
+        /* Estilos para a imagem no canto superior esquerdo */
         .corner-image {
             position: absolute;
-            top: 10px;
-            right: 10px;
-            max-width: 150px; /* Ajustar conforme necessário */
+            top: 20px;
+            left: 20px;
+            max-width: 170px; /* Ajustar conforme necessário */
             height: auto;
+        }
+
+        /* Estilos para o formulário com imagem de fundo */
+        .form-background {
+            background-image: url('img/marinhaLogo.jpg'); /* Substitua pelo caminho da sua imagem */
+            background-size: cover;
+            background-position: center;
+            padding: 20px;
+            border-radius: 10px;
         }
     </style>
 </head>
 <body>
 <div class="container">
     <h1 class="text-center mb-4">Formulário de dados CCM</h1>
-     <form method="POST">
+    
+    <!-- Imagem -->
+    <img src="img\marinha.jpeg " alt="Imagem" class="corner-image">
+
+    <form method="POST" class="form-background">
         {% for column in columns %}
         <div class="form-group row">
             <label for="{{ column }}" class="col-sm-2 col-form-label">{{ column }}</label>
@@ -43,9 +56,6 @@
         </div>
     </form>
 </div>
-
-<!-- Imagem no canto superior direito -->
-<img src="templates/img/marinha.png" alt="Imagem" class="corner-image">
 
 <!-- Seletor de registros -->
 <div class="record-selector">
@@ -93,13 +103,13 @@
         document.getElementById("total-records").textContent = dados.length;
     }
 
-     // Função para inserir um novo registro na tabela
-     function inserirNovoRegistro() {
+    // Função para inserir um novo registro na tabela
+    function inserirNovoRegistro() {
         // Crie um novo objeto de registro com campos vazios
         let novoRegistro = {};
-     //   {% for column in columns %}
+        //   {% for column in columns %}
         novoRegistro['{{ column }}'] = '';
-    //    {% endfor %}
+        //    {% endfor %}
 
         // Adicione o novo registro aos dados existentes
         dados.push(novoRegistro);
@@ -123,3 +133,4 @@
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 </html>
+
