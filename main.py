@@ -1,165 +1,83 @@
-from flask import Flask, render_template, request, redirect, url_for
-from psycopg2 import connect
-from database import disconnect, get_column_names
+from flask import Flask, render_template, request, redirect, url_for # type: ignore
+from flask_sqlalchemy import SQLAlchemy # type: ignore
 
-app = Flask(__name__, template_folder='.')
-
-# Conectar ao banco de dados ao iniciar a aplicação Flask
-conexao, cursor = None, None
+app = Flask(__name__)
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:genius@localhost/postgres'
+db = SQLAlchemy(app)
 
 
-def connect_to_database():
-    global conexao, cursor
-    conexao = connect(
-        dbname="postgres",
-        user="postgres",
-        password="genius",
-        host="localhost",
-        port="5432"
-    )
-    cursor = conexao.cursor()
+class DataCCM(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    # Defina as colunas restantes aqui
 
-
-def disconnect_from_database():
-    global conexao, cursor
-    if cursor:
-        cursor.close()
-    if conexao:
-        conexao.close()
-
-
-def get_previous_record(cursor, current_date):
-    cursor.execute(
-        #   "SELECT * FROM dataccm", (current_date,))
-        "SELECT * FROM dataccm WHERE servico < %s ORDER BY servico DESC LIMIT 1", (current_date,))
-    previous_record = cursor.fetchone()
-    return previous_record if previous_record else {}
-
-
-def get_next_record(cursor, current_date):
-    cursor.execute(
-        #   "SELECT * FROM dataccm", (current_date,))
-        "SELECT * FROM dataccm WHERE servico > %s ORDER BY servico ASC LIMIT 1", (current_date,))
-    next_record = cursor.fetchone()
-    return next_record if next_record else {}
+    def as_dict(self):
+        return {c.name: getattr(self, c.name) for c in self.__table__.columns}
 
 
 @app.route('/')
 def index():
     try:
-        connect_to_database()
-        # Obtém os nomes das colunas da tabela
-        columns = get_column_names(cursor)
-
-        cursor.execute("SELECT * FROM dataccm")
-        rows = cursor.fetchall()
-
-       # Monta os dados em uma estrutura adequada para serem passados para o template
-        dados = []
-        for row in rows:
-            # Cada linha será um dicionário onde as chaves são os nomes das colunas e os valores são os dados correspondentes
-            dados.append({columns[i]: row[i] for i in range(len(columns))})
-
-       # Dentro da função index()
-        total_registos = len(dados)
-
-        # Passa os dados para o template, juntamente com o número total de registos
-        return render_template('index.html', columns=columns, dados=dados, total_registos=total_registos)
-
+        dados = DataCCM.query.all()
+        total_registros = len(dados)
+        return render_template('index.html', dados=dados, total_registros=total_registros)
     except Exception as e:
-        # Em caso de erro, renderiza a página de erro
         return render_template('error.html', message=str(e))
-    finally:
-        disconnect_from_database()
 
 
 @app.route('/previous')
 def previous_record():
     try:
-        connect_to_database()
         current_id = request.args.get('current_id')
-        previous_record_data = get_previous_record(cursor, current_id)
-        columns = get_column_names(cursor)  # Obtém os nomes das colunas
-        return render_template('index.html', columns=columns, form_data=previous_record_data)
+        previous_record = DataCCM.query.filter(DataCCM.id < current_id).order_by(DataCCM.id.desc()).first()
+        return render_template('index.html', form_data=previous_record.as_dict())
     except Exception as e:
         return render_template('error.html', message=str(e))
-    finally:
-        disconnect_from_database()
 
 
 @app.route('/next')
 def next_record():
     try:
-        connect_to_database()
         current_id = request.args.get('current_id')
-        next_record_data = get_next_record(cursor, current_id)
-        columns = get_column_names(cursor)  # Obtém os nomes das colunas
-        return render_template('index.html', columns=columns, form_data=next_record_data)
+        next_record = DataCCM.query.filter(DataCCM.id > current_id).order_by(DataCCM.id.asc()).first()
+        return render_template('index.html', form_data=next_record.as_dict())
     except Exception as e:
         return render_template('error.html', message=str(e))
-    finally:
-        disconnect_from_database()
 
 
-@app.route('/novo-registo', methods=['POST'])
-def novo_registo():
+@app.route('/novo-registro', methods=['POST'])
+def novo_registro():
     try:
-        connect_to_database()
-        # Obtenha os dados do formulário
-        novo_registo_data = {}
-        for column in request.form:
-            novo_registo_data[column] = request.form[column]
-
-        # Insira o novo registo no banco de dados
-        cursor.execute("INSERT INTO dataccm (coluna1, coluna2, ...) VALUES (%s, %s, ...)",
-                       (novo_registo_data['coluna1'], novo_registo_data['coluna2'], ...))
-        conexao.commit()  # Não esqueça de comitar a transação
-        # Redireciona de volta para a página inicial
+        novo_registro_data = request.form.to_dict()
+        novo_registro = DataCCM(**novo_registro_data)
+        db.session.add(novo_registro)
+        db.session.commit()
         return redirect(url_for('index'))
     except Exception as e:
         return render_template('error.html', message=str(e))
-    finally:
-        disconnect_from_database()
 
 
-@app.route('/apagar-registo/<int:registro_id>', methods=['POST'])
-def apagar_registo(registro_id):
+@app.route('/apagar-registro/<int:registro_id>', methods=['POST'])
+def apagar_registro(registro_id):
     try:
-        connect_to_database()
-        # Apague o registo do banco de dados
-        cursor.execute("DELETE FROM dataccm WHERE id = %s", (registro_id,))
-        conexao.commit()  # Não esqueça de comitar a transação
-        # Redireciona de volta para a página inicial
+        registro = DataCCM.query.get(registro_id)
+        db.session.delete(registro)
+        db.session.commit()
         return redirect(url_for('index'))
     except Exception as e:
         return render_template('error.html', message=str(e))
-    finally:
-        disconnect_from_database()
 
 
-@app.route('/gravar-registo/<int:registro_id>', methods=['POST'])
-def gravar_registo(registro_id):
+@app.route('/gravar-registro/<int:registro_id>', methods=['POST'])
+def gravar_registro(registro_id):
     try:
-        connect_to_database()
-        # Obtenha os dados do formulário
-        dados_formulario = {}
-        for column in request.form:
-            dados_formulario[column] = request.form[column]
-
-        # Atualize o registo no banco de dados
-        update_query = "UPDATE dataccm SET "
-        update_query += ", ".join(
-            [f"{coluna} = %s" for coluna in dados_formulario.keys()])
-        update_query += " WHERE id = %s"
-        cursor.execute(update_query, list(
-            dados_formulario.values()) + [registro_id])
-        conexao.commit()  # Não esqueça de comitar a transação
-        # Redireciona de volta para a página inicial
+        dados_formulario = request.form.to_dict()
+        registro = DataCCM.query.get(registro_id)
+        for key, value in dados_formulario.items():
+            setattr(registro, key, value)
+        db.session.commit()
         return redirect(url_for('index'))
     except Exception as e:
         return render_template('error.html', message=str(e))
-    finally:
-        disconnect_from_database()
 
 
 if __name__ == '__main__':
